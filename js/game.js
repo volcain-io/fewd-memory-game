@@ -1,15 +1,15 @@
 // icon font
-const iconFont = 'zocial';
+const iconFont = 'fa';
 // declare card items
 const cardItems = [
-  `${iconFont}-amazon`,
-  `${iconFont}-android`,
-  `${iconFont}-appstore`,
-  `${iconFont}-bitcoin`,
-  `${iconFont}-facebook`,
-  `${iconFont}-github`,
-  `${iconFont}-reddit`,
-  `${iconFont}-twitter`,
+  `${iconFont} ${iconFont}-amazon fa-4x`,
+  `${iconFont} ${iconFont}-android fa-4x`,
+  `${iconFont} ${iconFont}-apple fa-4x`,
+  `${iconFont} ${iconFont}-google fa-4x`,
+  `${iconFont} ${iconFont}-facebook fa-4x`,
+  `${iconFont} ${iconFont}-github fa-4x`,
+  `${iconFont} ${iconFont}-reddit fa-4x`,
+  `${iconFont} ${iconFont}-twitter fa-4x`,
 ];
 // used to track the selections
 let selection = [];
