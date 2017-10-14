@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- HEAD -->
+    <h1>Memory Game</h1>
+    <p>Moves: <span id="gameMoves"></span> &ndash; Level: <span id="gameLevel"></span></p>
+    <p><span onclick="newGame();" class="pointer text-underline">Restart Game</span></p>
+
+    <!-- BODY -->
+    <!-- Layer to prevent further clicks -->
+    <div id="preventClicks" class="overlay"></div>
+    <!-- Model window to display the win -->
+    <div id="modal" class="modal visible animate-fadeIn">
+        <h2>Congratulations!</h2>
+        <p class="circle"><i class="fa fa-check fa-2x" aria-hidden="true"></i></p>
+        <p id="message">Great achievement.</p>
+        <p id="result"></p>
+        <p><span onclick="newGame(false);" class="pointer text-underline">New Game</span></p>
+    </div>
+    <!-- Grid to display the cards -->
+    <div id="grid" class="wrapper"></div>
+
+    <!-- Font Awesome -->
+    <script src="https://use.fontawesome.com/bb38c0e461.js"></script>
+    <!-- Game Logic -->
+    <script src="js/game.js"></script>
+</body>
+</html>

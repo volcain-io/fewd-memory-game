@@ -1,0 +1,11 @@
+{
+    "extends": "airbnb-base",
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "no-use-before-define": [ "error", {
+        "functions": false,
+        "variables": false
+    }]
+}

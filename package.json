@@ -1,0 +1,31 @@
+{
+  "name": "fewd-memory-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^4.8.0",
+    "eslint-config-airbnb-base": "^12.0.2",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-prettier": "^2.3.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/volcain-io/fewd-memory-game.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/volcain-io/fewd-memory-game/issues"
+  },
+  "homepage": "https://github.com/volcain-io/fewd-memory-game#readme",
+  "prettier": {
+      "printWidth": 100,
+      "singleQuote": true,
+      "trailingComma": "all"
+  }
+}
