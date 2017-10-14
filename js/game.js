@@ -2,14 +2,14 @@
 const iconFont = 'fa';
 // declare card items
 const cardItems = [
-  `${iconFont} ${iconFont}-amazon fa-4x`,
-  `${iconFont} ${iconFont}-android fa-4x`,
-  `${iconFont} ${iconFont}-apple fa-4x`,
-  `${iconFont} ${iconFont}-google fa-4x`,
-  `${iconFont} ${iconFont}-facebook fa-4x`,
-  `${iconFont} ${iconFont}-github fa-4x`,
-  `${iconFont} ${iconFont}-reddit fa-4x`,
-  `${iconFont} ${iconFont}-twitter fa-4x`,
+  `${iconFont} ${iconFont}-amazon ${iconFont}-4x`,
+  `${iconFont} ${iconFont}-android ${iconFont}-4x`,
+  `${iconFont} ${iconFont}-apple ${iconFont}-4x`,
+  `${iconFont} ${iconFont}-google ${iconFont}-4x`,
+  `${iconFont} ${iconFont}-facebook ${iconFont}-4x`,
+  `${iconFont} ${iconFont}-github ${iconFont}-4x`,
+  `${iconFont} ${iconFont}-reddit ${iconFont}-4x`,
+  `${iconFont} ${iconFont}-twitter ${iconFont}-4x`,
 ];
 // used to track the selections
 let selection = [];
