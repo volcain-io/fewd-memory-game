@@ -41,19 +41,11 @@ class GameStats {
   }
 
   /**
-   * Get the moves value.
+   * Get the moves value. One move equals two flipped cards.
    * @return {number} The moves value.
    */
   getMoves() {
     return this.moves;
-  }
-
-  /**
-   * Get calculated moves. One move equals two flipped cards.
-   * @return {number} The calculated moves value.
-   */
-  getCalculatedMoves() {
-    return Math.ceil(this.moves / 2);
   }
 
   /**
@@ -122,7 +114,7 @@ class GameStats {
         switch (elem) {
           case 'moves':
             // select element and set value
-            htmlElements.getGameMoves().textContent = this.getCalculatedMoves();
+            htmlElements.getGameMoves().textContent = this.getMoves();
             break;
           case 'level':
             // select element and set value
@@ -268,14 +260,14 @@ function doClick(event) {
       markCard(card);
       // flip the card
       flipCard(card);
-      // set moves
-      gameStats.increaseAndSetMoves();
-      // decrease level if user makes to much moves (see MIN_LEVEL_1, MIN_LEVEL_2)
-      if (gameStats.getMoves() === MIN_LEVEL_1 || gameStats.getMoves() === MIN_LEVEL_2) {
-        gameStats.decreaseAndSetLevel();
-      }
       // main part of the game
       if (selection && selection.length === 2) {
+        // set moves
+        gameStats.increaseAndSetMoves();
+        // decrease level if user makes to much moves (see MIN_LEVEL_1, MIN_LEVEL_2)
+        if (gameStats.getMoves() === MIN_LEVEL_1 || gameStats.getMoves() === MIN_LEVEL_2) {
+          gameStats.decreaseAndSetLevel();
+        }
         // get selected elements
         const [firstIdx, secondIdx] = selection;
         const firstElem = document.querySelector(`div[data-id="${firstIdx + 1}"]`);
@@ -353,17 +345,17 @@ function isGameOver() {
     // stop timer
     stopTimer();
     // get element to display message
-    htmlElements.getResult().textContent = `${gameStats.getCalculatedMoves()} moves at Level ${gameStats.getLevel()} in ${gameStats.getTime()} minutes`;
+    htmlElements.getResult().textContent = `${gameStats.getMoves()} moves at Level ${gameStats.getLevel()} in ${gameStats.getTime()} minutes`;
     // show modal window
     htmlElements.getModal().classList.add('visible', 'animate-fadeIn');
   }
 }
 
 function runOutOfTime() {
-    // stop timer
-    stopTimer();
-    // show modal window
-    htmlElements.getModalError().classList.add('visible', 'animate-fadeIn');
+  // stop timer
+  stopTimer();
+  // show modal window
+  htmlElements.getModalError().classList.add('visible', 'animate-fadeIn');
 }
 
 /**
@@ -526,7 +518,7 @@ function startTimer() {
     gameStats.setStatistic('time');
 
     if (minutes === 59 && seconds === 59) {
-        runOutOfTime();
+      runOutOfTime();
     }
   }, 1000);
 }
