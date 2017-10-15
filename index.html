@@ -7,20 +7,33 @@
 </head>
 <body>
     <!-- HEAD -->
-    <h1>Memory Game</h1>
-    <p>Moves: <span id="gameMoves"></span> &ndash; Level: <span id="gameLevel"></span></p>
-    <p><span onclick="newGame();" class="pointer text-underline">Restart Game</span></p>
+    <header>
+        <h1 class="header-memory">Memory Game</h1>
+        <ul>
+            <li class="moves">Moves: <span id="gameMoves"></span></li>
+            <li class="level">Level: <span id="gameLevel"></span></li>
+            <li class="time">Time: <span id="elapsedTime"></span></li>
+        </ul>
+        <p><span onclick="newGame();" class="pointer">Restart Game <i class="fa fa-refresh"></i></span></p>
+    </header>
 
     <!-- BODY -->
     <!-- Layer to prevent further clicks -->
     <div id="preventClicks" class="overlay"></div>
-    <!-- Model window to display the win -->
+    <!-- Modal window to display congratulations -->
     <div id="modal" class="modal">
         <h2>Congratulations!</h2>
         <p class="circle"><i class="fa fa-check fa-2x" aria-hidden="true"></i></p>
-        <p id="message">Great achievement.</p>
+        <p>Great achievement.</p>
         <p id="result"></p>
-        <p><span onclick="newGame(false);" class="pointer text-underline">New Game</span></p>
+        <p class="message"><span onclick="newGame(false);" class="pointer">New Game <i class="fa fa-play-circle"></i></span></p>
+    </div>
+    <!-- Model window to display if time elapsed -->
+    <div id="modalError" class="modal">
+        <h2 class="error">You Lost!</h2>
+        <p class="error"><i class="fa fa-exclamation-circle fa-3x" aria-hidden="true"></i></p>
+        <p>You've run out of time. Try it again!</p>
+        <p class="message"><span onclick="newGame(false);" class="pointer">New Game <i class="fa fa-play-circle"></i></span></p>
     </div>
     <!-- Grid to display the cards -->
     <div id="grid" class="wrapper"></div>
