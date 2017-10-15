@@ -268,19 +268,43 @@ function getMoves() {
   }
   return Math.floor(moves / 2);
 }
+
 /**
- * Set game level.
- * @param {number} level - The number to set. If false || < 1, set 1.
+ * Set game level in form of a star rating.
+ * @param {number} level - The number to set. If false || < 1, set 3.
  */
 function setLevel(level) {
   if (!level || (level && level < 1)) {
-    level = 1;
+    level = 3;
   }
   // select element and set value
   const gameLevel = document.getElementById('gameLevel');
   if (gameLevel) {
-    gameLevel.textContent = level;
+    gameLevel.innerHTML = getRatingByLevel(level);
   }
+}
+
+/**
+ * Get star rating by given level.
+ * @param {number} level - The level number. 
+ * @return {object} Returns star rating. Default are 3 stars.
+ */
+function getRatingByLevel(level) {
+  const starRating = '<i class="fa fa-star fa-1x"></i>';
+  const starORating = '<i class="fa fa-star-o fa-1x"></i>';
+  let innerHTML = starRating;
+  switch (level) {
+    case 1:
+      innerHTML += starORating + starORating;
+      break;
+    case 2:
+      innerHTML += starRating + starORating;
+      break;
+    default:
+      innerHTML += starRating + starRating;
+      break;
+  }
+  return innerHTML;
 }
 
 /**
