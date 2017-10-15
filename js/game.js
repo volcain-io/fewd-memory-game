@@ -1,3 +1,200 @@
+class GameStats {
+  /**
+   * Create a game stats instance.
+   */
+  constructor() {
+    this.moves = 0;
+    this.level = 3;
+    this.time = '00:00';
+  }
+
+  /**
+   * Set moves value.
+   * @param {number} moves - The move value to set.
+   */
+  setMoves(moves) {
+    if (!moves || (moves && moves < 1)) {
+      this.moves = 0;
+    } else {
+      this.moves = moves;
+    }
+  }
+
+  /**
+   * Set the level value.
+   * @param {number} level - The level value to set.
+   */
+  setLevel(level) {
+    if (!level || (level && (level < 1 || level > 3))) {
+      this.level = 3;
+    } else {
+      this.level = level;
+    }
+  }
+
+  /**
+   * Set the time value.
+   * @param {string} time - The time value to set.
+   */
+  setTime(time) {
+    this.time = time;
+  }
+
+  /**
+   * Get the moves value.
+   * @return {number} The moves value.
+   */
+  getMoves() {
+    return this.moves;
+  }
+
+  /**
+   * Get calculated moves. One move equals two flipped cards.
+   * @return {number} The calculated moves value.
+   */
+  getCalculatedMoves() {
+    return Math.ceil(this.moves / 2);
+  }
+
+  /**
+   * Get the level value.
+   * @return {number} The level value.
+   */
+  getLevel() {
+    return this.level;
+  }
+
+  /**
+   * Get the time value (MM:SS).
+   * @return {string} The string representing the time value.
+   */
+  getTime() {
+    return this.time;
+  }
+
+  /**
+   * Increase moves value by 1.
+   */
+  increaseAndSetMoves() {
+    const newValue = this.moves + 1;
+    this.setMoves(newValue);
+    this.setStatistic('moves');
+  }
+
+  /**
+   * Decrease level value by 1.
+   */
+  decreaseAndSetLevel() {
+    const newValue = this.level - 1;
+    this.setLevel(newValue);
+    this.setStatistic('level');
+  }
+
+  /**
+   * Get star rating by given level.
+   * @return {object} Returns star rating. Default are 3 stars.
+   */
+  getStarRating() {
+    const starRating = '<i class="fa fa-star fa-1x"></i>';
+    const starORating = '<i class="fa fa-star-o fa-1x"></i>';
+    let innerHTML = starRating;
+    switch (gameStats.getLevel()) {
+      case 1:
+        innerHTML += starORating + starORating;
+        break;
+      case 2:
+        innerHTML += starRating + starORating;
+        break;
+      default:
+        innerHTML += starRating + starRating;
+        break;
+    }
+    return innerHTML;
+  }
+
+  /**
+   * Set statistics.
+   * @param {...string} statisticList - A list of statistics to set. Possible values: 'moves', 'level', 'time'.
+   */
+  setStatistic(...statisticList) {
+    if (statisticList) {
+      statisticList.forEach(elem => {
+        switch (elem) {
+          case 'moves':
+            // select element and set value
+            htmlElements.getGameMoves().textContent = this.getCalculatedMoves();
+            break;
+          case 'level':
+            // select element and set value
+            htmlElements.getGameLevel().innerHTML = this.getStarRating();
+            break;
+          case 'time':
+            // select element and set value
+            htmlElements.getElapsedTime().textContent = this.getTime();
+            break;
+        }
+      });
+    }
+  }
+
+  /**
+   * Reset to default values and update the frontend.
+   * @param {...string} statisticList - A list of statistics to set. Possible values: 'moves', 'level', 'time'.
+   */
+  reset(...statisticList) {
+    this.setMoves(0);
+    this.setLevel(3);
+    this.setTime('00:00');
+  }
+}
+
+class HTMLElements {
+  constructor() {
+    this.gameMoves = document.getElementById('gameMoves');
+    this.gameLevel = document.getElementById('gameLevel');
+    this.elapsedTime = document.getElementById('elapsedTime');
+    this.grid = document.getElementById('grid');
+    this.preventClicks = document.getElementById('preventClicks');
+    this.modal = document.getElementById('modal');
+    this.modalError = document.getElementById('modalError');
+    this.result = document.getElementById('result');
+  }
+
+  getGameMoves() {
+    return this.gameMoves;
+  }
+
+  getGameLevel() {
+    return this.gameLevel;
+  }
+
+  getElapsedTime() {
+    return this.elapsedTime;
+  }
+
+  getGrid() {
+    return this.grid;
+  }
+
+  getPreventClicks() {
+    return this.preventClicks;
+  }
+
+  getModal() {
+    return this.modal;
+  }
+
+  getModalError() {
+    return this.modalError;
+  }
+
+  getResult() {
+    return this.result;
+  }
+}
+
+const gameStats = new GameStats();
+let htmlElements = null;
 // icon font
 const iconFont = 'fa';
 // declare card items
@@ -13,26 +210,24 @@ const cardItems = [
 ];
 // used to track the selections
 let selection = [];
-// used to count the number of moves the user needed to complete the game
-let moves = 0;
-// used to display game level
-// with each game restart the level will be decreased
-let level = 3;
 // shuffle cards
 let cards = shuffleCards(cardItems);
 // used to determine if game is over
 let countMatchingCards = 0;
+// interval id
+let timerId = null;
+// used to set level
+const MIN_LEVEL_1 = cards.length * 2 + 1; // 33
+const MIN_LEVEL_2 = cards.length + 1; // 17
 
 // create HTML layout
 window.onload = makeGrid;
 
 function makeGrid() {
-  // set moves
-  setMoves();
-  // set level
-  setLevel(level);
-  // select grid
-  const grid = document.getElementById('grid');
+  // select elements
+  htmlElements = new HTMLElements();
+  // set statistics
+  gameStats.setStatistic('moves', 'level', 'time');
 
   // add cards to grid
   cards.forEach((item, idx) => {
@@ -50,12 +245,14 @@ function makeGrid() {
 
     back.appendChild(icon);
     front.appendChild(back);
-    grid.appendChild(front);
+    htmlElements.getGrid().appendChild(front);
   });
   // select all HTML card elements
   let elemCards = document.querySelectorAll('.card');
   // add event listener to each item
   elemCards.forEach(elemCard => (elemCard.onclick = doClick));
+  // start timer
+  startTimer();
 }
 
 /**
@@ -72,7 +269,11 @@ function doClick(event) {
       // flip the card
       flipCard(card);
       // set moves
-      setMoves();
+      gameStats.increaseAndSetMoves();
+      // decrease level if user makes to much moves (see MIN_LEVEL_1, MIN_LEVEL_2)
+      if (gameStats.getMoves() === MIN_LEVEL_1 || gameStats.getMoves() === MIN_LEVEL_2) {
+        gameStats.decreaseAndSetLevel();
+      }
       // main part of the game
       if (selection && selection.length === 2) {
         // get selected elements
@@ -109,34 +310,38 @@ function doClick(event) {
 
 /**
  * Start new game. Behaviour is like follows:
- * 1. Clear selections, set moves to zero, decrease game level
+ * 1. Clear selections, reset statistics
  * 2. Remove all css classes, remove event listeners ('click') 
  * 3. Shuffle cards, place icons, add event listeners ('click')
  * @param {boolean} isRestart - Flag, to indicate a restart.
  */
 function newGame(isRestart = true) {
-  // Reset matches, clear selections, set moves to 0, decrease game level
-  moves = 0;
-  level = isRestart ? level - 1 : 3;
+  // Reset matches, clear selections, set moves to 0, decrease game level, reset timer
   countMatchingCards = 0;
   clear(selection);
-  setMoves();
-  setLevel(level);
+  gameStats.reset('moves', 'level', 'time');
+  gameStats.setStatistic('moves', 'level', 'time');
 
   // Remove all css classes, remove event listeners ('click')
   elemCards = document.querySelectorAll('.card');
   removeEventListeners(elemCards);
   resetCSS(elemCards);
-  const modal = document.getElementById('modal');
-  modal.classList.remove('visible', 'animate-fadeIn');
 
-  // using timeout to set the icons are flipping the cards
+  // using timeout to set a small delay and prevent flipping cards before modal window closes
   window.setTimeout(() => {
     // Shuffle cards, place icons, add event listeners ('click')
     cards = shuffleCards(cardItems);
     placeIcons(cards);
     elemCards.forEach(elemCard => (elemCard.onclick = doClick));
-  }, 500);
+    // clear message
+    htmlElements.getResult().textContent = '';
+    // disable modal window
+    htmlElements.getModal().classList.remove('visible', 'animate-fadeIn');
+    // disable modal error window
+    htmlElements.getModalError().classList.remove('visible', 'animate-fadeIn');
+    // starting the timer
+    startTimer();
+  }, 250);
 }
 
 /**
@@ -145,15 +350,20 @@ function newGame(isRestart = true) {
 function isGameOver() {
   // count of matching cards must be equal to the number of cards
   if (countMatchingCards === cards.length) {
-    // get modal window
-    const modal = document.getElementById('modal');
+    // stop timer
+    stopTimer();
     // get element to display message
-    const result = document.getElementById('result');
-    // set message
-    result.textContent = `You needed ${getMoves()} moves at Level ${level}`;
+    htmlElements.getResult().textContent = `${gameStats.getCalculatedMoves()} moves at Level ${gameStats.getLevel()} in ${gameStats.getTime()} minutes`;
     // show modal window
-    modal.classList.add('visible', 'animate-fadeIn');
+    htmlElements.getModal().classList.add('visible', 'animate-fadeIn');
   }
+}
+
+function runOutOfTime() {
+    // stop timer
+    stopTimer();
+    // show modal window
+    htmlElements.getModalError().classList.add('visible', 'animate-fadeIn');
 }
 
 /**
@@ -205,7 +415,6 @@ function markCard(card) {
     const id = card.getAttribute('data-id');
     if (id && selection && selection.indexOf(id - 1) === -1) {
       selection.push(id - 1);
-      moves += 1;
     }
   }
 }
@@ -244,67 +453,7 @@ function doMatch(isMatch, ...elementList) {
  * Toggle the overlay to allow/prevent click events.
  */
 function toggleLayer() {
-  const preventClicks = document.getElementById('preventClicks');
-  if (preventClicks) {
-    preventClicks.classList.toggle('visible');
-  }
-}
-
-/**
- * Set game moves. One move equals two flipped cards.
- */
-function setMoves() {
-  // select element and set value
-  const gameMoves = document.getElementById('gameMoves');
-  if (gameMoves) {
-    gameMoves.textContent = getMoves();
-  }
-}
-
-function getMoves() {
-  if (!moves || (moves && moves < 0)) {
-    moves = 0;
-    return moves;
-  }
-  return Math.floor(moves / 2);
-}
-
-/**
- * Set game level in form of a star rating.
- * @param {number} level - The number to set. If false || < 1, set 3.
- */
-function setLevel(level) {
-  if (!level || (level && level < 1)) {
-    level = 3;
-  }
-  // select element and set value
-  const gameLevel = document.getElementById('gameLevel');
-  if (gameLevel) {
-    gameLevel.innerHTML = getRatingByLevel(level);
-  }
-}
-
-/**
- * Get star rating by given level.
- * @param {number} level - The level number. 
- * @return {object} Returns star rating. Default are 3 stars.
- */
-function getRatingByLevel(level) {
-  const starRating = '<i class="fa fa-star fa-1x"></i>';
-  const starORating = '<i class="fa fa-star-o fa-1x"></i>';
-  let innerHTML = starRating;
-  switch (level) {
-    case 1:
-      innerHTML += starORating + starORating;
-      break;
-    case 2:
-      innerHTML += starRating + starORating;
-      break;
-    default:
-      innerHTML += starRating + starRating;
-      break;
-  }
-  return innerHTML;
+  htmlElements.getPreventClicks().classList.toggle('visible');
 }
 
 /**
@@ -350,5 +499,40 @@ function resetCSS(...elementList) {
 function clear(arr) {
   while (arr && arr.length > 0) {
     arr.pop();
+  }
+}
+
+function startTimer() {
+  // stop timer if any
+  stopTimer();
+  // start new timer
+  timerId = window.setInterval(() => {
+    let time = gameStats.getTime();
+    let [minutes, seconds] = time.split(':');
+
+    // parse to number
+    minutes = parseInt(minutes);
+    seconds = parseInt(seconds);
+    // set seconds
+    seconds = seconds < 59 ? seconds + 1 : 0;
+    if (seconds === 0) {
+      // set minutes
+      minutes = minutes < 59 ? minutes + 1 : 0;
+    }
+    seconds = seconds < 10 ? `0${seconds}` : seconds;
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+
+    gameStats.setTime(`${minutes}:${seconds}`);
+    gameStats.setStatistic('time');
+
+    if (minutes === 59 && seconds === 59) {
+        runOutOfTime();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerId) {
+    window.clearInterval(timerId);
   }
 }
