@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/volcain-io/fewd-memory-game#readme",
   "prettier": {
-      "printWidth": 100,
-      "singleQuote": true,
-      "trailingComma": "all"
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }
