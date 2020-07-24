@@ -345,9 +345,8 @@ function isGameOver() {
     // stop timer
     stopTimer();
 
-    let sTime = '';
     let [minutes, seconds] = gameStats.getTime().split(':');
-    sTime += minutes === '00' ? `${seconds} seconds` : `${gameStats.getTime()} minutes`;
+    const sTime = minutes === '00' ? `${seconds} seconds` : `${gameStats.getTime()} minutes`;
     // get element to display message
     htmlElements.getResult().textContent = `${gameStats.getMoves()} moves at Level ${gameStats.getLevel()} in ${sTime}`;
     // show modal window
