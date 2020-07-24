@@ -50,18 +50,21 @@ h2 {
 }
 
 .wrapper {
-    max-width: 600px;
+    max-width: 399px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 1rem;
-    grid-auto-rows: minmax(6rem, 6rem);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    /* display: grid; */
+    /* grid-template-columns: repeat(4, 1fr); */
+    /* grid-gap: 1rem; */
+    /* grid-auto-rows: minmax(6rem, 6rem); */
 }
 
 .wrapper > div {
     border-radius: 5%;
     background-color: #efe6dd;
-    padding: 1rem;
+    padding: 0.2rem;
     color: #fff;
 }
 
@@ -96,11 +99,15 @@ h2 {
     float: left;
     padding-bottom: 25%;
     text-align: center;
+    width: 64px;
+    height: 64px;
+    margin: 0.5rem;
 }
 
 .card:after {
     content: '?';
     font-size: 3rem;
+    color: #333;
 }
 
 .back {
@@ -206,4 +213,17 @@ h2 {
     50% { opacity: 0.5; }
     75% { opacity: 0.75; }
     100% { opacity: 1; }
+}
+
+@media only screen and (min-width: 700px) {
+  .wrapper {
+    max-width: 499px;
+  }
+  .wrapper > div {
+    padding: 1rem;
+  }
+  .card {
+    width: 6rem;
+    height: 6rem;
+  }
 }

@@ -84,7 +84,7 @@ class GameStats {
 
   /**
    * Get star rating by given level.
-   * @return {object} Returns star rating. Default are 3 stars.
+   * @return {object} Returns star rating. Default are 0 stars.
    */
   getStarRating() {
     const starRating = '<i class="fa fa-star fa-1x"></i>';
@@ -364,6 +364,9 @@ function runOutOfTime() {
  * @return {array} The new shuffled array
  */
 function shuffleCards(arr) {
+  if ( arr && arr.length > 6 && screen.width < 400 ) {
+    arr = arr.slice(0,6);
+  }
   // double size given array since we always need two icons of one card
   const newArr = [...arr, ...arr];
   let tmpValue = null;
