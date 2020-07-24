@@ -303,7 +303,7 @@ function doClick(event) {
 /**
  * Start new game. Behaviour is like follows:
  * 1. Clear selections, reset statistics
- * 2. Remove all css classes, remove event listeners ('click') 
+ * 2. Remove all css classes, remove event listeners ('click')
  * 3. Shuffle cards, place icons, add event listeners ('click')
  * @param {boolean} isRestart - Flag, to indicate a restart.
  */
@@ -344,8 +344,12 @@ function isGameOver() {
   if (countMatchingCards === cards.length) {
     // stop timer
     stopTimer();
+
+    let sTime = `${gameStats.getTime()} minutes`;
+    let [minutes, seconds] = sTime.split(':');
+    if (minutes === '00') sTime = `${seconds} seconds`;
     // get element to display message
-    htmlElements.getResult().textContent = `${gameStats.getMoves()} moves at Level ${gameStats.getLevel()} in ${gameStats.getTime()} minutes`;
+    htmlElements.getResult().textContent = `${gameStats.getMoves()} moves at Level ${gameStats.getLevel()} in ${sTime}`;
     // show modal window
     htmlElements.getModal().classList.add('visible', 'animate-fadeIn');
   }
@@ -364,9 +368,7 @@ function runOutOfTime() {
  * @return {array} The new shuffled array
  */
 function shuffleCards(arr) {
-  if ( arr && arr.length > 6 && screen.width < 400 ) {
-    arr = arr.slice(0,6);
-  }
+  if (arr && arr.length > 6 && screen.width < 400) arr = arr.slice(0, 6);
   // double size given array since we always need two icons of one card
   const newArr = [...arr, ...arr];
   let tmpValue = null;
