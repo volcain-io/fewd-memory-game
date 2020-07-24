@@ -1,10 +1,11 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <title>Memory Game</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron">
-    <link rel="stylesheet" href="css/styles.css">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron"/>
+    <link rel="stylesheet" href="css/styles.css"/>
 </head>
 <body>
     <!-- HEAD -->
@@ -12,7 +13,7 @@
         <h1 class="header-memory">Memory Game</h1>
         <ul>
             <li class="moves">Moves: <span id="gameMoves"></span></li>
-            <li class="level">Level: <span id="gameLevel"></span></li>
+            <li class="lifes">Lifes: <span id="gameLifes"></span></li>
             <li class="time">Time: <span id="elapsedTime"></span></li>
         </ul>
         <p><span onclick="newGame();" class="pointer">Restart Game <i class="fa fa-refresh"></i></span></p>
@@ -27,14 +28,14 @@
         <p class="circle"><i class="fa fa-check fa-2x" aria-hidden="true"></i></p>
         <p>Great achievement.</p>
         <p id="result"></p>
-        <p class="message"><span onclick="newGame(false);" class="pointer">New Game <i class="fa fa-play-circle"></i></span></p>
+        <p class="message"><span onclick="newGame();" class="pointer">New Game <i class="fa fa-play-circle"></i></span></p>
     </div>
-    <!-- Model window to display if time elapsed -->
+    <!-- Modal window to display if time elapsed -->
     <div id="modalError" class="modal">
         <h2 class="error">You Lost!</h2>
         <p class="error"><i class="fa fa-exclamation-circle fa-3x" aria-hidden="true"></i></p>
-        <p>You've run out of time. Try it again!</p>
-        <p class="message"><span onclick="newGame(false);" class="pointer">New Game <i class="fa fa-play-circle"></i></span></p>
+        <p id="errorMessage"></p>
+        <p class="message"><span onclick="newGame();" class="pointer">New Game <i class="fa fa-play-circle"></i></span></p>
     </div>
     <!-- Grid to display the cards -->
     <div id="grid" class="wrapper"></div>
@@ -43,5 +44,8 @@
     <script src="https://use.fontawesome.com/bb38c0e461.js"></script>
     <!-- Game Logic -->
     <script src="js/game.js"></script>
+    <template id="msgGameOver">
+        You've run out of {tpl::type}. Try it again!
+    </template>
 </body>
 </html>
