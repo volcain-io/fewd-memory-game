@@ -121,10 +121,14 @@ h2 {
     backface-visibility: hidden;
     transition: transform 0.3s;
     transform: rotateY(-180deg);
-    padding: 1rem;
+    padding: 0.5rem;
     -webkit-backface-visibility: hidden;
     -webkit-transition: -webkit-transform 0.3s;
     -webkit-transform: rotateY(-180deg);
+}
+
+.back > span {
+    font-size: 3rem;
 }
 
 .card.flipped .back {
@@ -221,6 +225,12 @@ h2 {
   }
   .wrapper > div {
     padding: 1rem;
+  }
+  .back {
+    padding: 1rem;
+  }
+  .back > span {
+    font-size: 4rem;
   }
   .card {
     width: 6rem;
