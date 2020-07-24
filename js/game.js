@@ -4,7 +4,7 @@ class GameStats {
    */
   constructor() {
     this.moves = 0;
-    this.level = 3;
+    this.lifes = 3;
     this.time = '00:00';
   }
 
@@ -13,7 +13,7 @@ class GameStats {
    * @param {number} moves - The move value to set.
    */
   setMoves(moves) {
-    if (!moves || (moves && moves < 1)) {
+    if (!moves || moves < 1) {
       this.moves = 0;
     } else {
       this.moves = moves;
@@ -21,14 +21,14 @@ class GameStats {
   }
 
   /**
-   * Set the level value.
-   * @param {number} level - The level value to set.
+   * Set the lifes value.
+   * @param {number} lifes - The lifes value to set.
    */
-  setLevel(level) {
-    if (!level || (level && (level < 1 || level > 3))) {
-      this.level = 3;
+  setLifes(lifes) {
+    if (!lifes || lifes < 1 || lifes > 3) {
+      this.lifes = 3;
     } else {
-      this.level = level;
+      this.lifes = lifes;
     }
   }
 
@@ -49,11 +49,11 @@ class GameStats {
   }
 
   /**
-   * Get the level value.
-   * @return {number} The level value.
+   * Get the lifes value.
+   * @return {number} The lifes value.
    */
-  getLevel() {
-    return this.level;
+  getLifes() {
+    return this.lifes;
   }
 
   /**
@@ -74,23 +74,23 @@ class GameStats {
   }
 
   /**
-   * Decrease level value by 1.
+   * Decrease lifes value by 1.
    */
-  decreaseAndSetLevel() {
-    const newValue = this.level - 1;
-    this.setLevel(newValue);
-    this.setStatistic('level');
+  decreaseAndSetLifes() {
+    const newValue = this.lifes - 1;
+    this.setLifes(newValue);
+    this.setStatistic('lifes');
   }
 
   /**
-   * Get star rating by given level.
+   * Get star rating by given lifes.
    * @return {object} Returns star rating. Default are 0 stars.
    */
   getStarRating() {
     const starRating = '<i class="fa fa-star fa-1x"></i>';
     const starORating = '<i class="fa fa-star-o fa-1x"></i>';
     let innerHTML = starRating;
-    switch (gameStats.getLevel()) {
+    switch (gameStats.getLifes()) {
       case 1:
         innerHTML += starORating + starORating;
         break;
@@ -106,22 +106,19 @@ class GameStats {
 
   /**
    * Set statistics.
-   * @param {...string} statisticList - A list of statistics to set. Possible values: 'moves', 'level', 'time'.
+   * @param {...string} statisticList - A list of statistics to set. Possible values: 'moves', 'lifes', 'time'.
    */
   setStatistic(...statisticList) {
     if (statisticList) {
       statisticList.forEach(elem => {
         switch (elem) {
           case 'moves':
-            // select element and set value
             htmlElements.getGameMoves().textContent = this.getMoves();
             break;
-          case 'level':
-            // select element and set value
-            htmlElements.getGameLevel().innerHTML = this.getStarRating();
+          case 'lifes':
+            htmlElements.getGameLifes().innerHTML = this.getStarRating();
             break;
           case 'time':
-            // select element and set value
             htmlElements.getElapsedTime().textContent = this.getTime();
             break;
         }
@@ -131,11 +128,11 @@ class GameStats {
 
   /**
    * Reset to default values and update the frontend.
-   * @param {...string} statisticList - A list of statistics to set. Possible values: 'moves', 'level', 'time'.
+   * @param {...string} statisticList - A list of statistics to set. Possible values: 'moves', 'lifes', 'time'.
    */
   reset(...statisticList) {
     this.setMoves(0);
-    this.setLevel(3);
+    this.setLifes(3);
     this.setTime('00:00');
   }
 }
@@ -143,21 +140,23 @@ class GameStats {
 class HTMLElements {
   constructor() {
     this.gameMoves = document.getElementById('gameMoves');
-    this.gameLevel = document.getElementById('gameLevel');
+    this.gameLifes = document.getElementById('gameLifes');
     this.elapsedTime = document.getElementById('elapsedTime');
     this.grid = document.getElementById('grid');
     this.preventClicks = document.getElementById('preventClicks');
     this.modal = document.getElementById('modal');
     this.modalError = document.getElementById('modalError');
     this.result = document.getElementById('result');
+    this.tplMsgGameOver = document.getElementById('msgGameOver');
+    this.errorMessage = document.getElementById('errorMessage');
   }
 
   getGameMoves() {
     return this.gameMoves;
   }
 
-  getGameLevel() {
-    return this.gameLevel;
+  getGameLifes() {
+    return this.gameLifes;
   }
 
   getElapsedTime() {
@@ -183,43 +182,60 @@ class HTMLElements {
   getResult() {
     return this.result;
   }
+
+  getTplMsgGameOver() {
+    return this.tplMsgGameOver;
+  }
+
+  getErrorMessage() {
+    return this.errorMessage;
+  }
 }
 
 const gameStats = new GameStats();
 let htmlElements = null;
-// icon font
 const iconFont = 'fa';
-// declare card items
-const cardItems = [
-  `${iconFont} ${iconFont}-amazon ${iconFont}-4x`,
-  `${iconFont} ${iconFont}-android ${iconFont}-4x`,
-  `${iconFont} ${iconFont}-apple ${iconFont}-4x`,
-  `${iconFont} ${iconFont}-google ${iconFont}-4x`,
-  `${iconFont} ${iconFont}-facebook ${iconFont}-4x`,
-  `${iconFont} ${iconFont}-github ${iconFont}-4x`,
-  `${iconFont} ${iconFont}-reddit ${iconFont}-4x`,
-  `${iconFont} ${iconFont}-twitter ${iconFont}-4x`,
-];
+const cardItems = generateItems();
 // used to track the selections
 let selection = [];
-// shuffle cards
 let cards = shuffleCards(cardItems);
 // used to determine if game is over
 let countMatchingCards = 0;
 // interval id
 let timerId = null;
-// used to set level
-const MIN_LEVEL_1 = cards.length * 2 + 1; // 33
-const MIN_LEVEL_2 = cards.length + 1; // 17
+// used to set lifes
+const MIN_MOVES_0 = cards.length + 8;
+const MIN_MOVES_1 = cards.length + 1;
+const MIN_MOVES_2 = cards.length / 2 + 1;
 
 // create HTML layout
 window.onload = makeGrid;
 
+/**
+ * Generate 6 items for the game,
+ * but if the screen size is greater then 399 pixels, then generate 8 items.
+ * @return {array} The new items
+ */
+function generateItems() {
+  const cardItems = [
+    `${iconFont} ${iconFont}-amazon ${iconFont}-4x`,
+    `${iconFont} ${iconFont}-android ${iconFont}-4x`,
+    `${iconFont} ${iconFont}-apple ${iconFont}-4x`,
+    `${iconFont} ${iconFont}-google ${iconFont}-4x`,
+    `${iconFont} ${iconFont}-facebook ${iconFont}-4x`,
+    `${iconFont} ${iconFont}-github ${iconFont}-4x`,
+  ];
+  if (screen.width >= 400) {
+    cardItems.push(`${iconFont} ${iconFont}-reddit ${iconFont}-4x`);
+    cardItems.push(`${iconFont} ${iconFont}-twitter ${iconFont}-4x`);
+  }
+
+  return cardItems;
+}
+
 function makeGrid() {
-  // select elements
   htmlElements = new HTMLElements();
-  // set statistics
-  gameStats.setStatistic('moves', 'level', 'time');
+  gameStats.setStatistic('moves', 'lifes', 'time');
 
   // add cards to grid
   cards.forEach((item, idx) => {
@@ -264,9 +280,9 @@ function doClick(event) {
       if (selection && selection.length === 2) {
         // set moves
         gameStats.increaseAndSetMoves();
-        // decrease level if user makes to much moves (see MIN_LEVEL_1, MIN_LEVEL_2)
-        if (gameStats.getMoves() === MIN_LEVEL_1 || gameStats.getMoves() === MIN_LEVEL_2) {
-          gameStats.decreaseAndSetLevel();
+        // decrease lifes if user makes to much moves (see MIN_MOVES_0, MIN_MOVES_1, MIN_MOVES_2)
+        if (gameStats.getMoves() === MIN_MOVES_1 || gameStats.getMoves() === MIN_MOVES_2) {
+          gameStats.decreaseAndSetLifes();
         }
         // get selected elements
         const [firstIdx, secondIdx] = selection;
@@ -281,14 +297,13 @@ function doClick(event) {
           removeEventListeners(firstElem, secondElem);
           // count matching cards (2 cards == 1 match)
           countMatchingCards += 2;
-          // check if game is over
-          isGameOver();
         } else {
           // reset elements after 1 second
           window.setTimeout(() => {
             resetCSS(firstElem, secondElem);
           }, 1000);
         }
+        isGameOver();
         // set css class ('success')
         doMatch(isMatch, firstElem, secondElem);
         // hide overlay to allow events
@@ -305,14 +320,13 @@ function doClick(event) {
  * 1. Clear selections, reset statistics
  * 2. Remove all css classes, remove event listeners ('click')
  * 3. Shuffle cards, place icons, add event listeners ('click')
- * @param {boolean} isRestart - Flag, to indicate a restart.
  */
-function newGame(isRestart = true) {
-  // Reset matches, clear selections, set moves to 0, decrease game level, reset timer
+function newGame() {
+  // Reset matches, clear selections, set moves to 0, decrease game lifes, reset timer
   countMatchingCards = 0;
   clear(selection);
-  gameStats.reset('moves', 'level', 'time');
-  gameStats.setStatistic('moves', 'level', 'time');
+  gameStats.reset('moves', 'lifes', 'time');
+  gameStats.setStatistic('moves', 'lifes', 'time');
 
   // Remove all css classes, remove event listeners ('click')
   elemCards = document.querySelectorAll('.card');
@@ -321,17 +335,11 @@ function newGame(isRestart = true) {
 
   // using timeout to set a small delay and prevent flipping cards before modal window closes
   window.setTimeout(() => {
-    // Shuffle cards, place icons, add event listeners ('click')
     cards = shuffleCards(cardItems);
     placeIcons(cards);
     elemCards.forEach(elemCard => (elemCard.onclick = doClick));
-    // clear message
-    htmlElements.getResult().textContent = '';
-    // disable modal window
-    htmlElements.getModal().classList.remove('visible', 'animate-fadeIn');
-    // disable modal error window
-    htmlElements.getModalError().classList.remove('visible', 'animate-fadeIn');
-    // starting the timer
+    hideSuccess();
+    hideError();
     startTimer();
   }, 250);
 }
@@ -342,22 +350,49 @@ function newGame(isRestart = true) {
 function isGameOver() {
   // count of matching cards must be equal to the number of cards
   if (countMatchingCards === cards.length) {
-    // stop timer
     stopTimer();
+    showSuccess();
+  }
 
-    let [minutes, seconds] = gameStats.getTime().split(':');
-    const sTime = minutes === '00' ? `${seconds} seconds` : `${gameStats.getTime()} minutes`;
-    // get element to display message
-    htmlElements.getResult().textContent = `${gameStats.getMoves()} moves at Level ${gameStats.getLevel()} in ${sTime}`;
-    // show modal window
-    htmlElements.getModal().classList.add('visible', 'animate-fadeIn');
+  if (gameStats.getMoves() === MIN_MOVES_0) {
+    stopTimer();
+    showError('lifes');
   }
 }
 
-function runOutOfTime() {
-  // stop timer
-  stopTimer();
-  // show modal window
+/**
+ * Hide modal window.
+ */
+function hideSuccess() {
+  htmlElements.getResult().textContent = '';
+  htmlElements.getModal().classList.remove('visible', 'animate-fadeIn');
+}
+
+/**
+ * Display success modal window.
+ */
+function showSuccess() {
+  let [minutes, seconds] = gameStats.getTime().split(':');
+  const sTime = minutes === '00' ? `${seconds} seconds` : `${gameStats.getTime()} minutes`;
+  htmlElements.getResult().textContent = `${gameStats.getMoves()} moves in ${sTime}`;
+  htmlElements.getModal().classList.add('visible', 'animate-fadeIn');
+}
+
+/**
+ * Hide error modal window.
+ */
+function hideError() {
+  htmlElements.getModalError().classList.remove('visible', 'animate-fadeIn');
+}
+
+/**
+ * Display error modal window.
+ */
+function showError(type = 'time') {
+  htmlElements.getErrorMessage().textContent = htmlElements
+    .getTplMsgGameOver()
+    .content.textContent.trim()
+    .replaceAll('{tpl::type}', type);
   htmlElements.getModalError().classList.add('visible', 'animate-fadeIn');
 }
 
@@ -367,7 +402,7 @@ function runOutOfTime() {
  * @return {array} The new shuffled array
  */
 function shuffleCards(arr) {
-  if (arr && arr.length > 6 && screen.width < 400) arr = arr.slice(0, 6);
+  // if (arr && arr.length > 6 && screen.width < 400) arr = arr.slice(0, 6);
   // double size given array since we always need two icons of one card
   const newArr = [...arr, ...arr];
   let tmpValue = null;
@@ -498,35 +533,39 @@ function clear(arr) {
   }
 }
 
+/**
+ * Starts the timer and displays the elapsed time on the page.
+ * The timer will stop after 03:00 minutes and display a 'game over' message.
+ */
 function startTimer() {
-  // stop timer if any
   stopTimer();
-  // start new timer
   timerId = window.setInterval(() => {
     let time = gameStats.getTime();
-    let [minutes, seconds] = time.split(':');
+    let [sMinutes, sSeconds] = time.split(':');
 
     // parse to number
-    minutes = parseInt(minutes);
-    seconds = parseInt(seconds);
-    // set seconds
+    let minutes = parseInt(sMinutes);
+    let seconds = parseInt(sSeconds);
     seconds = seconds < 59 ? seconds + 1 : 0;
     if (seconds === 0) {
-      // set minutes
       minutes = minutes < 59 ? minutes + 1 : 0;
     }
-    seconds = seconds < 10 ? `0${seconds}` : seconds;
-    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    sSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    sMinutes = minutes < 10 ? `0${minutes}` : minutes;
 
-    gameStats.setTime(`${minutes}:${seconds}`);
+    gameStats.setTime(`${sMinutes}:${sSeconds}`);
     gameStats.setStatistic('time');
 
-    if (minutes === 59 && seconds === 59) {
-      runOutOfTime();
+    if (minutes >= 3 && seconds >= 00) {
+      stopTimer();
+      showError();
     }
   }, 1000);
 }
 
+/**
+ * Cancel timer.
+ */
 function stopTimer() {
   if (timerId) {
     window.clearInterval(timerId);
